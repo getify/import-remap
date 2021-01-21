@@ -1,0 +1,45 @@
+{
+	"name": "import-remap",
+	"description": "Rewrite ES module import specifiers using an import-map",
+	"version": "0.0.1",
+	"main": "src/remap.js",
+	"bin": {
+		"import-remap": "./scripts/import-remap"
+	},
+	"scripts": {
+		"prepare": "npm run build",
+		"build-all": "node scripts/build-all.js",
+		"build": "npm run build-all"
+	},
+	"dependencies": {
+		"@babel/generator": "~7.12.11",
+		"@babel/parser": "~7.12.11",
+		"@babel/traverse": "~7.12.12",
+		"@babel/types": "~7.12.12",
+		"dotenv": "~8.2.0",
+		"minimist": "~1.2.5",
+		"moduloze": "~0.7.0",
+		"mkdirp": "~1.0.4",
+		"recursive-readdir-sync": "~1.0.6"
+	},
+	"mz-dependencies": {
+		"cli.js": "CLI",
+		"index.js": "ImportRemap"
+	},
+	"repository": "getify/import-remap",
+	"keywords": [
+		"cjs",
+		"esm",
+		"umd",
+		"module",
+		"transpiler",
+		"convert"
+	],
+	"bugs": {
+		"url": "https://github.com/getify/import-remap/issues",
+		"email": "getify@gmail.com"
+	},
+	"homepage": "https://github.com/getify/import-remap",
+	"author": "Kyle Simpson <getify@gmail.com>",
+	"license": "MIT"
+}
