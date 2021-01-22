@@ -1,7 +1,7 @@
 {
 	"name": "import-remap",
 	"description": "Rewrite ES module import specifiers using an import-map",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"main": "src/remap.js",
 	"bin": {
 		"import-remap": "./scripts/import-remap"
@@ -18,10 +18,12 @@
 		"@babel/types": "~7.12.12",
 		"dotenv": "~8.2.0",
 		"minimist": "~1.2.5",
-		"moduloze": "~0.7.0",
 		"mkdirp": "~1.0.4",
 		"recursive-readdir-sync": "~1.0.6",
 		"terser": "~5.4.0"
+	},
+	"devDependencies": {
+		"moduloze": "~0.7.0"
 	},
 	"mz-dependencies": {
 		"cli.js": "CLI",
