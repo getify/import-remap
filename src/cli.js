@@ -8,6 +8,7 @@ var dotenv = require("dotenv");
 var minimist = require("minimist");
 var mkdirp = require("mkdirp");
 var recursiveReadDir = require("recursive-readdir-sync");
+var terser = require("terser");
 
 var remap = require("./index.js");
 
@@ -15,10 +16,11 @@ var programVersion;
 var HOMEPATH = os.homedir();
 
 var params = minimist(process.argv.slice(2),{
-	boolean: [ "help","version","recursive", ],
+	boolean: [ "help","version","recursive","minify", ],
 	string: [ "from","to","map", ],
 	alias: {
 		"recursive": "r",
+		"minify": "n",
 	},
 	default: {
 		help: false,
@@ -51,6 +53,7 @@ async function CLI(version = "0.0.0?") {
 		for (let [ basePath, relativePath, ] of inputFiles) {
 			let code = fs.readFileSync(path.join(basePath,relativePath),"utf-8");
 			let res = remap(relativePath,code,config.map);
+			res = await processContents(res);
 
 			let outputPath = path.join(config.to,relativePath);
 			let outputDir = path.dirname(outputPath);
@@ -68,6 +71,28 @@ async function CLI(version = "0.0.0?") {
 	catch (err) {
 		return showError(err);
 	}
+}
+
+async function processContents(contents) {
+	if (params.minify) {
+		let result = await terser.minify(contents,{
+			mangle: {
+				keep_fnames: true,
+			},
+			compress: {
+				keep_fnames: true,
+			},
+			output: {
+				comments: "all",
+			},
+		});
+		if (!(result && result.code)) {
+			if (result.error) throw result.error;
+			else throw result;
+		}
+		contents = result.code;
+	}
+	return contents;
 }
 
 function loadConfig() {
@@ -171,6 +196,8 @@ function printHelp() {
 	console.log(`                           [${ config.mapPath }]`);
 	console.log("--recursive, -r            scan recursively for input files");
 	console.log(`                           [${ config.recursive }]`);
+	console.log("--minify, -n               minify output files");
+	console.log(`                           [${ config.minify }]`);
 	console.log("");
 }
 

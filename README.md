@@ -30,6 +30,8 @@ See `import-remap --help` for a list of available parameter flags.
 
 * `--recursive` (alias `-r`): traverse the `--from`-specified path recursively
 
+* `--minify` (alias `-n`): minify the output (using terser)
+
 The CLI tool will also read the following settings from the current process environment (or source them from a .env file in the current working directory):
 
 * `FROMPATH`: corresponds to the `--from` parameter (see above)

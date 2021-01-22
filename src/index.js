@@ -109,9 +109,7 @@ function remap(codePath,contents,importMap) {
 			return generate(programAST).code;
 		}
 	}
-	catch (err) {
-		console.log(err);
-	}
+	catch (err) {}
 
 	// if we get here, remapping either failed or had
 	// no replacements to make for this file, so just
