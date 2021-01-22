@@ -1,7 +1,7 @@
 {
 	"name": "import-remap",
 	"description": "Rewrite ES module import specifiers using an import-map",
-	"version": "0.1.2",
+	"version": "0.2.0",
 	"main": "src/remap.js",
 	"bin": {
 		"import-remap": "./scripts/import-remap"
@@ -28,6 +28,12 @@
 	"mz-dependencies": {
 		"cli.js": "CLI",
 		"index.js": "ImportRemap"
+	},
+	"exports": {
+		".": "./src/index.js",
+		"./cli": "./src/cli.js",
+		"./esm": "./dist/esm/index.mjs",
+		"./esm/cli": "./dist/esm/cli.mjs"
 	},
 	"repository": "getify/import-remap",
 	"keywords": [

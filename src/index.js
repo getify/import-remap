@@ -57,6 +57,17 @@ function remap(codePath,contents,importMap) {
 				}
 			},
 		},
+		ExportAllDeclaration: {
+			exit(path) {
+				// has source (module specifier)?
+				if (path.node.source) {
+					moduleSpecifiers.add({
+						path,
+						specifier: path.node.source,
+					});
+				}
+			},
+		},
 		ExportNamedDeclaration: {
 			exit(path) {
 				// has source (module specifier)?

@@ -50,7 +50,7 @@ console.log("*** Building Import-Map ***");
 			path.join(ROOT_DIR,"node_modules",".bin","mz"),
 			[
 				`--prepend=${ copyrightHeader }`,
-				"-rubn",
+				"-ruben",
 			]
 		);
 
