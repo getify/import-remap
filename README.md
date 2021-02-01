@@ -137,8 +137,10 @@ var remap = require("import-remap");
 Or in an ES module (in Node):
 
 ```js
-import remap from "import-remap/esm";
+import remap from "import-remap";
 ```
+
+**Note:** As of v0.3.0, the previously required ESM import specifier segment `/esm` in **Import-Remap** `import` paths has been deprecated (and will eventually be removed), in favor of unified import specifier paths via [Node Conditional Exports](https://nodejs.org/api/packages.html#packages_conditional_exports). For ESM `import` statements, always use the specifier style `"import-remap"`, instead of `"import-remap/esm"`.
 
 Running this tool in a non-Node environment is not supported.
 

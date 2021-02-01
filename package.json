@@ -1,7 +1,7 @@
 {
 	"name": "import-remap",
 	"description": "Rewrite ES module import specifiers using an import-map",
-	"version": "0.2.0",
+	"version": "0.3.0",
 	"main": "src/remap.js",
 	"bin": {
 		"import-remap": "./scripts/import-remap"
@@ -30,8 +30,14 @@
 		"index.js": "ImportRemap"
 	},
 	"exports": {
-		".": "./src/index.js",
-		"./cli": "./src/cli.js",
+		".": {
+			"import": "./dist/esm/index.mjs",
+			"default": "./src/index.js"
+		},
+		"./cli": {
+			"import": "./dist/esm/cli.mjs",
+			"default": "./src/cli.js"
+		},
 		"./esm": "./dist/esm/index.mjs",
 		"./esm/cli": "./dist/esm/cli.mjs"
 	},
