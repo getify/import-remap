@@ -5,6 +5,5 @@
 	"skip": [
 		"**/copyright-header.txt"
 	],
-	"ignoreUnknownDependency": true,
 	".mjs": true
 }

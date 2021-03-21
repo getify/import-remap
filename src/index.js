@@ -14,6 +14,8 @@ module.exports = remap;
 function remap(codePath,contents,importMap) {
 	var moduleSpecifiers = new Set();
 
+	importMap = importMap.imports || importMap;
+
 	var visitors = {
 		CallExpression: {
 			exit(path) {

@@ -1,8 +1,8 @@
 {
 	"name": "import-remap",
 	"description": "Rewrite ES module import specifiers using an import-map",
-	"version": "0.3.0",
-	"main": "src/remap.js",
+	"version": "0.4.0",
+	"main": "src/index.js",
 	"bin": {
 		"import-remap": "./scripts/import-remap"
 	},
@@ -12,22 +12,34 @@
 		"build": "npm run build-all"
 	},
 	"dependencies": {
-		"@babel/generator": "~7.12.11",
-		"@babel/parser": "~7.12.11",
-		"@babel/traverse": "~7.12.12",
-		"@babel/types": "~7.12.12",
+		"@babel/generator": "~7.13.9",
+		"@babel/parser": "~7.13.11",
+		"@babel/traverse": "~7.13.0",
+		"@babel/types": "~7.13.0",
 		"dotenv": "~8.2.0",
 		"minimist": "~1.2.5",
 		"mkdirp": "~1.0.4",
 		"recursive-readdir-sync": "~1.0.6",
-		"terser": "~5.4.0"
+		"terser": "~5.6.1"
 	},
 	"devDependencies": {
-		"moduloze": "~0.7.0"
+		"moduloze": "~0.8.0"
 	},
 	"mz-dependencies": {
 		"cli.js": "CLI",
-		"index.js": "ImportRemap"
+		"index.js": "ImportRemap",
+		":::path": "NodePath",
+		":::fs": "NodeFS",
+		":::os": "NodeOS",
+		":::@babel/generator": "BabelGenerator",
+		":::@babel/parser": "BableParser",
+		":::@babel/traverse": "BabelTraverse",
+		":::@babel/types": "BabelTypes",
+		":::dotenv": "DotEnv",
+		":::minimist": "Minimist",
+		":::mkdirp": "MkDirP",
+		":::recursive-readdir-sync": "RecursiveReaddirSync",
+		":::terser": "Terser"
 	},
 	"exports": {
 		".": {
@@ -47,6 +59,8 @@
 		"esm",
 		"umd",
 		"module",
+		"import",
+		"import-map",
 		"transpiler",
 		"convert"
 	],
