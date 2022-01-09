@@ -1,7 +1,7 @@
 {
 	"name": "import-remap",
 	"description": "Rewrite ES module import specifiers using an import-map",
-	"version": "0.4.0",
+	"version": "0.5.0",
 	"main": "src/index.js",
 	"bin": {
 		"import-remap": "./scripts/import-remap"
@@ -12,15 +12,16 @@
 		"build": "npm run build-all"
 	},
 	"dependencies": {
-		"@babel/generator": "~7.13.9",
-		"@babel/parser": "~7.13.11",
-		"@babel/traverse": "~7.13.0",
-		"@babel/types": "~7.13.0",
-		"dotenv": "~8.2.0",
+		"@babel/generator": "~7.16.7",
+		"@babel/parser": "~7.16.7",
+		"@babel/traverse": "~7.16.7",
+		"@babel/types": "~7.16.7",
+		"dotenv": "~10.0.0",
+		"micromatch": "~4.0.4",
 		"minimist": "~1.2.5",
 		"mkdirp": "~1.0.4",
 		"recursive-readdir-sync": "~1.0.6",
-		"terser": "~5.6.1"
+		"terser": "~5.10.0"
 	},
 	"devDependencies": {
 		"moduloze": "~0.8.0"
@@ -36,6 +37,7 @@
 		":::@babel/traverse": "BabelTraverse",
 		":::@babel/types": "BabelTypes",
 		":::dotenv": "DotEnv",
+		":::micromatch": "Micromatch",
 		":::minimist": "Minimist",
 		":::mkdirp": "MkDirP",
 		":::recursive-readdir-sync": "RecursiveReaddirSync",

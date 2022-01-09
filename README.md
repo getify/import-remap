@@ -85,7 +85,7 @@ To use the CLI:
 
 ```cmd
 import-remap --from="./src" --to="./src.remapped"
---map="./path/to/import-map.json" [--recursive] [--minify]
+--map="./path/to/import-map.json" [--ignore={GLOB-PATTERN}] [--recursive] [--minify]
 ```
 
 See `import-remap --help` for a list of available parameter flags.
@@ -97,6 +97,8 @@ See `import-remap --help` for a list of available parameter flags.
 * `--to=PATH`: specifies the path to a directory to write the remapped ES module file(s); defaults to a directory called `./.remapped` in the same location as the `--from`-specified path
 
 * `--map=PATH`: specifies the path to the JSON import-map file to use for remapping; defaults to "./import-map.json"
+
+* `--ignore` (alias `-i`): specify a [glob pattern](https://github.com/micromatch/micromatch#matching-features) for ignoring remap processing on an input file path -- copies the file from the input path untouched if matched; multiple ignore-patterns can be specified by using `--ignore` / `-i` multiple times in the command
 
 * `--recursive` (alias `-r`): traverse the `--from`-specified path recursively
 

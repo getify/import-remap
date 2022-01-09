@@ -5,6 +5,7 @@ var fs = require("fs");
 var os = require("os");
 
 var dotenv = require("dotenv");
+var micromatch = require("micromatch");
 var minimist = require("minimist");
 var mkdirp = require("mkdirp");
 var recursiveReadDir = require("recursive-readdir-sync");
@@ -17,10 +18,11 @@ var HOMEPATH = os.homedir();
 
 var params = minimist(process.argv.slice(2),{
 	boolean: [ "help","version","recursive","minify", ],
-	string: [ "from","to","map", ],
+	string: [ "from","to","map","ignore" ],
 	alias: {
 		"recursive": "r",
 		"minify": "n",
+		"ignore": "i"
 	},
 	default: {
 		help: false,
@@ -51,9 +53,19 @@ async function CLI(version = "0.0.0?") {
 	try {
 		// remap each file
 		for (let [ basePath, relativePath, ] of inputFiles) {
-			let code = fs.readFileSync(path.join(basePath,relativePath),"utf-8");
-			let res = remap(relativePath,code,config.map);
-			res = await processContents(res);
+			let readPath = path.join(basePath,relativePath);
+			let output;
+
+			// file DOES NOT match an ignored pattern?
+			if (!matchesIgnore(readPath)) {
+				let text = fs.readFileSync(readPath,"utf-8");
+				output = remap(relativePath,text,config.map);
+				output = await processContents(output);
+			}
+			// otherwise, simply copy this file without remapping
+			else {
+				output = fs.readFileSync(readPath);
+			}
 
 			let outputPath = path.join(config.to,relativePath);
 			let outputDir = path.dirname(outputPath);
@@ -61,7 +73,12 @@ async function CLI(version = "0.0.0?") {
 				throw new Error(`Output directory (${ outputDir }) could not be created.`);
 			}
 			try {
-				fs.writeFileSync(outputPath,res,"utf-8");
+				if (typeof output == "string") {
+					fs.writeFileSync(outputPath,output,"utf-8");
+				}
+				else {
+					fs.writeFileSync(outputPath,output);
+				}
 			}
 			catch (err) {
 				throw new Error(`Output file (${ outputPath }) could not be created.`);
@@ -165,7 +182,7 @@ function getInputFiles() {
 				fs.readdirSync(config.from)
 				.filter(function skipDirs(pathStr){
 					return !isDirectory(pathStr);
-				})
+				});
 		}
 	}
 	// otherwise, assume only a single input file
@@ -190,6 +207,8 @@ function printHelp() {
 	console.log("--version                  print version info");
 	console.log("--from={PATH}              scan directory for input file(s)");
 	console.log(`                           [${ config.from }]`);
+	console.log("--ignore={PATTERN}, -i     ignore (copy-only) glob pattern matching input(s)");
+	console.log(`                           [${ config.ignore }]`)
 	console.log("--to={PATH}                target directory for output file(s)");
 	console.log(`                           [${ config.to }]`);
 	console.log("--map={PATH}               path to import-map JSON file");
@@ -218,17 +237,28 @@ function defaultCLIConfig({
 	from = process.env.FROMPATH,
 	to = process.env.TOPATH,
 	mapPath = process.env.MAPPATH,
+	ignore = params.ignore,
 	map,
 	recursive,
+	minify,
 } = {}) {
 	// params override configs
 	from = resolvePath(params.from || from || "./");
 	to = resolvePath(params.to || to || "./.remapped");
 	mapPath = resolvePath(params.map || mapPath || "./import-map.json");
 	recursive = Boolean(params.recursive || recursive);
+	minify = Boolean(params.minify || minify);
+	if (ignore) {
+		if (!Array.isArray(ignore)) {
+			ignore = [ ignore, ];
+		}
+	}
+	else {
+		ignore = [];
+	}
 
 	return {
-		from, to, mapPath, map, recursive,
+		from, to, mapPath, ignore, map, recursive, minify
 	};
 }
 
@@ -282,4 +312,10 @@ function isDirectory(pathStr) {
 
 function checkPath(pathStr) {
 	return fs.existsSync(pathStr);
+}
+
+function matchesIgnore(pathStr) {
+	if (config.ignore && config.ignore.length > 0) {
+		return (micromatch(pathStr,config.ignore).length > 0);
+	}
 }
