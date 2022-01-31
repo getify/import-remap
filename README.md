@@ -1,5 +1,9 @@
 # Import-Remap
 
+[![npm Module](https://badge.fury.io/js/import-remap.svg)](https://www.npmjs.org/package/import-remap)
+[![Modules](https://img.shields.io/badge/modules-ESM%2BUMD%2BCJS-a1356a)](https://nodejs.org/api/packages.html#dual-commonjses-module-packages)
+[![License](https://img.shields.io/badge/license-MIT-a1356a)](LICENSE.txt)
+
 Rewrite ES module import specifiers using an import-map.
 
 ## Overview
@@ -81,6 +85,8 @@ As you can see, there's no fancy matching logic in the string values. Only exact
 
 ## CLI
 
+[![npm Module](https://badge.fury.io/js/import-remap.svg)](https://www.npmjs.org/package/import-remap)
+
 To use the CLI:
 
 ```cmd
@@ -112,6 +118,9 @@ The CLI tool will also read the following settings from the current process envi
 
 ## Library
 
+[![npm Module](https://badge.fury.io/js/import-remap.svg)](https://www.npmjs.org/package/import-remap)
+[![Modules](https://img.shields.io/badge/modules-ESM%2BUMD%2BCJS-a1356a)](https://nodejs.org/api/packages.html#dual-commonjses-module-packages)
+
 The typical use of **Import-remap** is through the CLI, but it can also be used in your application code. The package provides a single function called `remap(..)`, which expects the following arguments:
 
 * `codePath`: a string representing the current path of the file; not currently used, but reserved for potential future use
@@ -123,6 +132,9 @@ The typical use of **Import-remap** is through the CLI, but it can also be used 
 The return value from `remap(..)` is a string with the remapped code. If the contents weren't parsed properly as an ES module, or if no matching specifiers were found to replace, this return value will identical to the passed in `contents` argument.
 
 ## npm Package
+
+[![npm Module](https://badge.fury.io/js/import-remap.svg)](https://www.npmjs.org/package/import-remap)
+[![Modules](https://img.shields.io/badge/modules-ESM%2BUMD%2BCJS-a1356a)](https://nodejs.org/api/packages.html#dual-commonjses-module-packages)
 
 To install this package from `npm`:
 
@@ -147,5 +159,7 @@ import remap from "import-remap";
 Running this tool in a non-Node environment is not supported.
 
 ## License
+
+[![License](https://img.shields.io/badge/license-MIT-a1356a)](LICENSE.txt)
 
 All code and documentation are (c) 2021 Kyle Simpson and released under the [MIT License](http://getify.mit-license.org/). A copy of the MIT License [is also included](LICENSE.txt).
