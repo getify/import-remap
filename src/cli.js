@@ -18,11 +18,15 @@ var HOMEPATH = os.homedir();
 
 var params = minimist(process.argv.slice(2),{
 	boolean: [ "help","version","recursive","minify", ],
-	string: [ "from","to","map","ignore" ],
+	string: [ "from","to","map","keep","skip","ignore", ],
 	alias: {
 		"recursive": "r",
 		"minify": "n",
-		"ignore": "i"
+		"keep": "k",
+		"skip": "s",
+
+		// deprecated
+		"ignore": "i",
 	},
 	default: {
 		help: false,
@@ -56,15 +60,22 @@ async function CLI(version = "0.0.0?") {
 			let readPath = path.join(basePath,relativePath);
 			let output;
 
-			// file DOES NOT match an ignored pattern?
-			if (!matchesIgnore(readPath)) {
-				let text = fs.readFileSync(readPath,"utf-8");
-				output = remap(relativePath,text,config.map);
-				output = await processContents(output);
+			// file DOES NOT match a skip pattern?
+			if (!matchesSkip(readPath)) {
+				// file DOES NOT match a keep (aka ignored) pattern?
+				if (!matchesKeepIgnore(readPath)) {
+					let text = fs.readFileSync(readPath,"utf-8");
+					output = remap(relativePath,text,config.map);
+					output = await processContents(output);
+				}
+				// otherwise, simply copy this file without remapping
+				else {
+					output = fs.readFileSync(readPath);
+				}
 			}
-			// otherwise, simply copy this file without remapping
+			// otherwise, completely skip this file
 			else {
-				output = fs.readFileSync(readPath);
+				continue;
 			}
 
 			let outputPath = path.join(config.to,relativePath);
@@ -122,6 +133,13 @@ function loadConfig() {
 	if (params.version) {
 		printVersion();
 		return;
+	}
+
+	// warn using deprecated '--ignore' / '-i' option?
+	if (params.ignore) {
+		console.warn("******************");
+		console.warn("Option '--ignore' / '-i' is deprecated; use '--keep' / '-k' instead.");
+		console.warn("******************");
 	}
 
 	// from path invalid?
@@ -207,8 +225,11 @@ function printHelp() {
 	console.log("--version                  print version info");
 	console.log("--from={PATH}              scan directory for input file(s)");
 	console.log(`                           [${ config.from }]`);
-	console.log("--ignore={PATTERN}, -i     ignore (copy-only) glob pattern matching input(s)");
-	console.log(`                           [${ config.ignore }]`)
+	console.log("--keep={PATTERN}, -k       keep (copy-only) glob pattern matching input(s)");
+	console.log(`                           [${ config.keep }]`);
+	console.log("--ignore={PATTERN}, -i     deprecated; use --keep / -k instead");
+	console.log("--skip={PATTERN}, -s       skip glob pattern matching input(s) entirely");
+	console.log(`                           [${ config.skip }]`);
 	console.log("--to={PATH}                target directory for output file(s)");
 	console.log(`                           [${ config.to }]`);
 	console.log("--map={PATH}               path to import-map JSON file");
@@ -237,6 +258,8 @@ function defaultCLIConfig({
 	from = process.env.FROMPATH,
 	to = process.env.TOPATH,
 	mapPath = process.env.MAPPATH,
+	skip = params.skip,
+	keep = params.keep,
 	ignore = params.ignore,
 	map,
 	recursive,
@@ -248,17 +271,28 @@ function defaultCLIConfig({
 	mapPath = resolvePath(params.map || mapPath || "./import-map.json");
 	recursive = Boolean(params.recursive || recursive);
 	minify = Boolean(params.minify || minify);
-	if (ignore) {
-		if (!Array.isArray(ignore)) {
-			ignore = [ ignore, ];
+	if (skip) {
+		if (!Array.isArray(skip)) {
+			skip = [ skip, ];
 		}
 	}
 	else {
-		ignore = [];
+		skip = [];
+	}
+	if (keep) {
+		if (!Array.isArray(keep)) {
+			keep = [ keep, ];
+		}
+	}
+	else {
+		keep = [];
+	}
+	if (ignore) {
+		keep = [ ...keep, ...(Array.isArray(ignore) ? ignore : [ ignore, ]), ];
 	}
 
 	return {
-		from, to, mapPath, ignore, map, recursive, minify
+		from, to, mapPath, skip, keep, map, recursive, minify
 	};
 }
 
@@ -314,8 +348,14 @@ function checkPath(pathStr) {
 	return fs.existsSync(pathStr);
 }
 
-function matchesIgnore(pathStr) {
-	if (config.ignore && config.ignore.length > 0) {
-		return (micromatch(pathStr,config.ignore).length > 0);
+function matchesSkip(pathStr) {
+	if (config.skip && config.skip.length > 0) {
+		return (micromatch(pathStr,config.skip).length > 0);
+	}
+}
+
+function matchesKeepIgnore(pathStr) {
+	if (config.keep && config.keep.length > 0) {
+		return (micromatch(pathStr,config.keep).length > 0);
 	}
 }

@@ -104,7 +104,11 @@ See `import-remap --help` for a list of available parameter flags.
 
 * `--map=PATH`: specifies the path to the JSON import-map file to use for remapping; defaults to "./import-map.json"
 
-* `--ignore` (alias `-i`): specify a [glob pattern](https://github.com/micromatch/micromatch#matching-features) for ignoring remap processing on an input file path -- copies the file from the input path untouched if matched; multiple ignore-patterns can be specified by using `--ignore` / `-i` multiple times in the command
+* `--keep` (alias `-k`): specify a [glob pattern](https://github.com/micromatch/micromatch#matching-features) for ignoring remap processing on an input file path -- keeps/copies the file from the input path untouched if matched; multiple keep-patterns can be specified by using `--keep` / `-k` multiple times in the command
+
+* `--ignore` (alias `-i`): **deprecated (as of v0.6.0)** (due to semantic confusion); renamed to `--keep` / `-k`
+
+* `--skip` (alias `-s`): specify a [glob pattern](https://github.com/micromatch/micromatch#matching-features) for skipping a file entirely; multiple skip-patterns can be specified by using `--skip` / `-s` multiple times in the command
 
 * `--recursive` (alias `-r`): traverse the `--from`-specified path recursively
 
@@ -154,7 +158,7 @@ Or in an ES module (in Node):
 import remap from "import-remap";
 ```
 
-**Note:** As of v0.3.0, the previously required ESM import specifier segment `/esm` in **Import-Remap** `import` paths has been deprecated (and will eventually be removed), in favor of unified import specifier paths via [Node Conditional Exports](https://nodejs.org/api/packages.html#packages_conditional_exports). For ESM `import` statements, always use the specifier style `"import-remap"`, instead of `"import-remap/esm"`.
+**Note:** As of v0.6.0, the previously deprecated ESM import specifier segment `/esm` in **Import-Remap** `import` paths have been removed, in favor of unified import specifier paths via [Node Conditional Exports](https://nodejs.org/api/packages.html#packages_conditional_exports). For ESM `import` statements, always use the specifier style `"import-remap"`, as `"import-remap/esm"` style will now break.
 
 Running this tool in a non-Node environment is not supported.
 
@@ -162,4 +166,4 @@ Running this tool in a non-Node environment is not supported.
 
 [![License](https://img.shields.io/badge/license-MIT-a1356a)](LICENSE.txt)
 
-All code and documentation are (c) 2021 Kyle Simpson and released under the [MIT License](http://getify.mit-license.org/). A copy of the MIT License [is also included](LICENSE.txt).
+All code and documentation are (c) 2023 Kyle Simpson and released under the [MIT License](http://getify.mit-license.org/). A copy of the MIT License [is also included](LICENSE.txt).

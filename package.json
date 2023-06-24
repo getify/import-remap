@@ -1,7 +1,7 @@
 {
 	"name": "import-remap",
 	"description": "Rewrite ES module import specifiers using an import-map",
-	"version": "0.5.1",
+	"version": "0.6.0",
 	"main": "src/index.js",
 	"bin": {
 		"import-remap": "./scripts/import-remap"
@@ -12,16 +12,16 @@
 		"build": "npm run build-all"
 	},
 	"dependencies": {
-		"@babel/generator": "~7.16.7",
-		"@babel/parser": "~7.16.7",
-		"@babel/traverse": "~7.16.7",
-		"@babel/types": "~7.16.7",
-		"dotenv": "~10.0.0",
-		"micromatch": "~4.0.4",
-		"minimist": "~1.2.5",
-		"mkdirp": "~1.0.4",
+		"@babel/generator": "~7.22.5",
+		"@babel/parser": "~7.22.5",
+		"@babel/traverse": "~7.22.5",
+		"@babel/types": "~7.22.5",
+		"dotenv": "~16.3.1",
+		"micromatch": "~4.0.5",
+		"minimist": "~1.2.8",
+		"mkdirp": "~3.0.1",
 		"recursive-readdir-sync": "~1.0.6",
-		"terser": "~5.15.0"
+		"terser": "~5.18.1"
 	},
 	"devDependencies": {
 		"moduloze": "~0.9.1"
@@ -51,9 +51,7 @@
 		"./cli": {
 			"import": "./dist/esm/cli.mjs",
 			"default": "./src/cli.js"
-		},
-		"./esm": "./dist/esm/index.mjs",
-		"./esm/cli": "./dist/esm/cli.mjs"
+		}
 	},
 	"repository": "getify/import-remap",
 	"keywords": [
