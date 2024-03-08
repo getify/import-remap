@@ -4,6 +4,7 @@ var { default: traverse, } = require("@babel/traverse");
 var T = require("@babel/types");
 var { default: generate, } = require("@babel/generator");
 var { parse, } = require("@babel/parser");
+var { parse: parseImportMap, resolve } = require('@import-maps/resolve');
 
 
 module.exports = remap;
@@ -11,10 +12,12 @@ module.exports = remap;
 
 // ******************************
 
-function remap(codePath,contents,importMap) {
+function remap(codePath,contents,importMap,base) {
 	var moduleSpecifiers = new Set();
 
-	importMap = importMap.imports || importMap;
+	// Backwards compatibility: If the map has no "imports" key, then use the
+	// passed object the value of the "imports" property of a compliant map
+	importMap = parseImportMap(importMap.imports ? importMap : { imports: importMap, }, base);
 
 	var visitors = {
 		CallExpression: {
@@ -102,9 +105,10 @@ function remap(codePath,contents,importMap) {
 			);
 
 			// specifier found in import-map?
-			if (importMap[specifierText]) {
+			const { resolvedImport, matched } = resolve(specifierText, importMap, codePath)
+			if (matched) {
 				anyRemapped = true;
-				let replacement = T.StringLiteral(importMap[specifierText]);
+				let replacement = T.StringLiteral(resolvedImport.toString());
 
 				// replace call-expression's first argument?
 				if (T.isCallExpression(entry.path.node)) {
