@@ -18,12 +18,13 @@ var HOMEPATH = os.homedir();
 
 var params = minimist(process.argv.slice(2),{
 	boolean: [ "help","version","recursive","minify", ],
-	string: [ "from","to","map","keep","skip","ignore", ],
+	string: [ "from","to","map","keep","skip","ignore","base" ],
 	alias: {
 		"recursive": "r",
 		"minify": "n",
 		"keep": "k",
 		"skip": "s",
+		"base": "b",
 
 		// deprecated
 		"ignore": "i",
@@ -65,7 +66,7 @@ async function CLI(version = "0.0.0?") {
 				// file DOES NOT match a keep (aka ignored) pattern?
 				if (!matchesKeepIgnore(readPath)) {
 					let text = fs.readFileSync(readPath,"utf-8");
-					output = remap(relativePath,text,config.map);
+					output = remap(relativePath,text,config.map,config.base);
 					output = await processContents(output);
 				}
 				// otherwise, simply copy this file without remapping
@@ -223,6 +224,8 @@ function printHelp() {
 	console.log("");
 	console.log("--help                     print this help");
 	console.log("--version                  print version info");
+	console.log("--base={URL}               public base URL from which the output file(s) would be delivered");
+	console.log(`                           [${ config.base }]`);
 	console.log("--from={PATH}              scan directory for input file(s)");
 	console.log(`                           [${ config.from }]`);
 	console.log("--keep={PATTERN}, -k       keep (copy-only) glob pattern matching input(s)");
@@ -261,6 +264,7 @@ function defaultCLIConfig({
 	skip = params.skip,
 	keep = params.keep,
 	ignore = params.ignore,
+	base,
 	map,
 	recursive,
 	minify,
@@ -271,6 +275,11 @@ function defaultCLIConfig({
 	mapPath = resolvePath(params.map || mapPath || "./import-map.json");
 	recursive = Boolean(params.recursive || recursive);
 	minify = Boolean(params.minify || minify);
+	try {
+		base = new URL(params.base || 'http://localhost/');
+	} catch (e) {
+		return showError(`Invalid base: ${base} is not a valid URL.`);
+	}
 	if (skip) {
 		if (!Array.isArray(skip)) {
 			skip = [ skip, ];
@@ -292,7 +301,7 @@ function defaultCLIConfig({
 	}
 
 	return {
-		from, to, mapPath, skip, keep, map, recursive, minify
+		from, to, mapPath, skip, keep, map, recursive, minify, base
 	};
 }
 
